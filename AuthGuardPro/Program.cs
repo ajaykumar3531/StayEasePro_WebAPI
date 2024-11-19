@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StayEasePro_Core.Entities;
+
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,6 +85,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -105,6 +107,8 @@ app.UseAuthorization();
 
 // Map controllers to handle incoming requests
 app.MapControllers();
+
+app.UseMiddleware<CustomAuthorizeUserMiddleware>();
 
 // Run the application
 app.Run();

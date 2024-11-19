@@ -285,6 +285,7 @@ namespace AuthGuardPro_Application.Repos.Services
                             response.Email = request.Email;
                             response.StatusMessage = Constants.MSG_LOGIN_SUCC;
                             response.StatusCode = StatusCodes.Status200OK;
+                           
                         }
                         else
                         {

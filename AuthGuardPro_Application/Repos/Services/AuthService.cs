@@ -1,7 +1,10 @@
 ﻿using AuthGuardPro_Application.DTO_s.Requests;
 using AuthGuardPro_Application.Repos.Contracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using StayEasePro_Domain.DTO_s.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,16 +15,15 @@ namespace AuthGuardPro_Application.Repos.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration; // IConfiguration instance to access app settings
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILoggerService _loggerService; 
 
-       // private readonly IHttpContextAccessor _httpContextAccessor;
-
-        // Constructor that accepts IConfiguration to access JWT settings from app configuration
-        public AuthService(IConfiguration configuration)
+        public AuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor,ILoggerService loggerService)
         {
             _configuration = configuration;
-         
+            _httpContextAccessor = httpContextAccessor;
+            _loggerService = loggerService;
         }
-
 
 
         // Asynchronous method to generate a JWT token based on the provided TokenRequest
@@ -40,14 +42,11 @@ namespace AuthGuardPro_Application.Repos.Services
             var claims = new[]
             {
                 // A standard claim for the subject of the token, here using the UserID from the request
-                new Claim(JwtRegisteredClaimNames.Sub, request.UserID),
+                new Claim(JwtRegisteredClaimNames.Name, request.UserID),
                 
                 // A unique identifier (JTI) for each token, using a GUID for uniqueness
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                
-                // Name claim representing the UserID, as an additional identifier
-                new Claim(ClaimTypes.Name, request.UserID),
-              
+               
                 // Standard email claim in the JWT, using the Email from the TokenRequest
                 new Claim(JwtRegisteredClaimNames.Email, request.Email)
             };
@@ -61,6 +60,7 @@ namespace AuthGuardPro_Application.Repos.Services
                 signingCredentials: credentials // Set signing credentials using the HMAC-SHA256 key
             );
 
+            
             // Serialize the token into a JWT string and return it to the caller
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -70,11 +70,33 @@ namespace AuthGuardPro_Application.Repos.Services
         {
             try
             {
+                // Access the current HttpContext
+                var httpContext = _httpContextAccessor.HttpContext;
 
+                if (httpContext?.User?.Identity is ClaimsIdentity identity && identity.IsAuthenticated)
+                {
+                    // Retrieve all claims from the authenticated user's context
+                    var claims = identity.Claims;
+
+                    var userID = claims.FirstOrDefault(c => c.Type == "name")?.Value;
+                    var email = claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+
+
+                    // Store or use claims globally, e.g., via static properties or dependency injection
+                    GlobalUserContext.UserID = userID.ToUpper().ToString();
+                    GlobalUserContext.Email = email;
+
+                }
+                else
+                {
+                    
+                    throw new UnauthorizedAccessException("User is not authenticated.");
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                await _loggerService.LocalLogs(ex);
+                throw;
             }
         }
 

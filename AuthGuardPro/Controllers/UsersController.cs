@@ -3,16 +3,19 @@ using AuthGuardPro_Application.DTO_s.Responses;
 using AuthGuardPro_Application.Repos.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StayEasePro_Domain.DTO_s.DTO;
 
 [Route("api/User")]
 [ApiController]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly ILoggerService _loggerService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService,ILoggerService loggerService)
     {
         _userService = userService;
+        _loggerService = loggerService;
     }
 
     /// <summary>
@@ -34,6 +37,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            await _loggerService.LocalLogs(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -51,6 +55,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+           
             var response = await _userService.LoginUser(request);
             if (response.StatusCode == StatusCodes.Status200OK && !string.IsNullOrEmpty(response.StatusMessage))
                 return Ok(response);
@@ -59,6 +64,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            await _loggerService.LocalLogs(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -69,6 +75,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            string userID = GlobalUserContext.UserID.ToUpper();
             var response = await _userService.ForgotPassword(request);
             if (response.StatusCode == StatusCodes.Status200OK && !string.IsNullOrEmpty(response.StatusMessage))
                 return Ok(response);
@@ -77,6 +84,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            await _loggerService.LocalLogs(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -96,6 +104,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            await _loggerService.LocalLogs(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
