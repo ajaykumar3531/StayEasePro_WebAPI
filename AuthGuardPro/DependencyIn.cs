@@ -11,7 +11,7 @@ namespace AuthGuardPro
 
             services.CoreDI();
             services.ApplicationDI();
-            services.InfraDI();
+            
             return services;
         }
     }

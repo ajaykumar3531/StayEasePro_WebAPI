@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace AuthGuardPro_Application.DTO_s.Responses
 {
-    public class DeleteResponse : StatusDTO
+    public class LoginUserResponse : StatusDTO
     {
-        public string Username { get; set; } = string.Empty;
+        
         public string Email { get; set; } = string.Empty;
-      
+
+        public string JWTToken { get;set; } = string.Empty; 
     }
 }

@@ -47,10 +47,7 @@ namespace AuthGuardPro_Application.Repos.Services
                 
                 // Name claim representing the UserID, as an additional identifier
                 new Claim(ClaimTypes.Name, request.UserID),
-                
-                // NameIdentifier claim to hold the username, adding it for more detailed user info in the token
-                new Claim(ClaimTypes.NameIdentifier, request.UserName),
-                
+              
                 // Standard email claim in the JWT, using the Email from the TokenRequest
                 new Claim(JwtRegisteredClaimNames.Email, request.Email)
             };

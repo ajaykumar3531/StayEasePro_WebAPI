@@ -40,17 +40,16 @@ namespace AuthGuardPro_Application.Repos.Services
                     return response;
                 }
 
-                //// Check if a user with the same username or email already exists and is not marked as deleted.
-                //var existedUser = (await _userContext.GetAllAsync())?.ToList()?
-                //    .FirstOrDefault(x =>
-                //        (x.Email.ToLower() == request.Username.ToLower() || x.Email.ToLower() == request.Email.ToLower()) && x.IsDeleted == false);
+                // Check if a user with the same username or email already exists and is not marked as deleted.
+                var existedUser = (await _userContext.GetAllAsync()).FirstOrDefault(x =>
+                                (x.Email.ToLower() == request.Email.ToLower() && x.Phone.ToLower() == request.Phone.ToLower()) && x.DeleteStatus == false);
 
-                //if (existedUser != null)
-                //{
-                //    // If the user exists, return a response indicating that the user data was found.
-                //    response.StatusMessage = Constants.MSG_DATA_FOUND;
-                //    response.StatusCode = StatusCodes.Status302Found;
-                //}
+                if (existedUser != null)
+                {
+                    // If the user exists, return a response indicating that the user data was found.
+                    response.StatusMessage = Constants.MSG_DATA_FOUND;
+                    response.StatusCode = StatusCodes.Status302Found;
+                }
                 else
                 {
                     // Generate a salt and hash the password with the salt for secure storage.
@@ -60,18 +59,29 @@ namespace AuthGuardPro_Application.Repos.Services
                     // Create a new user object with the provided details and hashed password.
                     var userData = new User()
                     {
-                        //Username = request.Username,
-                        //Email = request.Email,
-                        //IsDeleted = false,
-                        //PasswordHash = hashedPassword,
-                        //Salt = salt,
+                        Email = request.Email,
+                        Address = request.Address,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        DeleteStatus = false,
+                        Salt = salt,
+                        PasswordHash = hashedPassword,
+                        Phone = request.Phone,
+                        Role = request.Role,
+                        DateOfBirth = request.DOB,
+                        JoinedDate = request.JoinedDate,
+                        ExpectedJoinDate = request.ExpectedJoindDate,
+
+
                     };
 
                     // Add the new user to the context and save changes.
                     await _userContext.AddAsync(userData);
                     if (await _userContext.SaveChangesAsync() > 0)
                     {
-                      
+                        response.DateCreated = userData.CreatedAt;
+                        response.Email = userData.Email;
+                        response.UserId = userData.UserId.ToString().ToUpper();
                         response.StatusMessage = Constants.MSG_USER_ADD;
                         response.StatusCode = StatusCodes.Status200OK;
                     }
@@ -87,8 +97,8 @@ namespace AuthGuardPro_Application.Repos.Services
             }
             catch (Exception ex)
             {
-                _logger.LocalLogs(ex);
-                // Log the exception or handle it as needed. Re-throwing it can help with higher-level error handling.
+                await _logger.LocalLogs(ex);
+
                 throw;
             }
         }
@@ -112,42 +122,42 @@ namespace AuthGuardPro_Application.Repos.Services
                     return response;
                 }
 
-                //// Find an existing user by username and email who is not already marked as deleted.
-                //User existedUser = (await _userContext.GetAllAsync())?.ToList()?
-                //    .FirstOrDefault(x =>
-                //        x.Username.ToLower() == request.Username.ToLower() &&
-                //        x.Email.ToLower() == request.Email.ToLower() &&
-                //        x.IsDeleted == false);
+                // Find an existing user by username and email who is not already marked as deleted.
+                User existedUser = (await _userContext.GetAllAsync())?.ToList()?
+                    .FirstOrDefault(x =>
 
-                //if (existedUser != null)
-                //{
-                //    // Mark the user as deleted and update the timestamp.
-                //    existedUser.IsDeleted = true;
-                //    existedUser.DateUpdated = DateTime.Now;
-                //    await _userContext.UpdateAsync(existedUser);
+                        x.Email.ToLower() == request.Email.ToLower() &&
+                        x.DeleteStatus == false);
 
-                //    // Save changes and check if the deletion was successful.
-                //    if (await _userContext.SaveChangesAsync() > 0)
-                //    {
-                //        // Populate response with success status and user details.
-                //        response.Username = request.Username;
-                //        response.Email = request.Email;
-                //        response.StatusMessage = Constants.MSG_SUCCESS;
-                //        response.StatusCode = StatusCodes.Status200OK;
-                //    }
-                //    else
-                //    {
-                //        // If saving changes failed, return a not found status.
-                //        response.Username = request.Username;
-                //        response.Email = request.Email;
-                //        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                //        response.StatusCode = StatusCodes.Status404NotFound;
-                //    }
-                //}
+                if (existedUser != null)
+                {
+                    // Mark the user as deleted and update the timestamp.
+                    existedUser.DeleteStatus = true;
+                    existedUser.UpdatedAt = DateTime.Now;
+                    await _userContext.UpdateAsync(existedUser);
+
+                    // Save changes and check if the deletion was successful.
+                    if (await _userContext.SaveChangesAsync() > 0)
+                    {
+                        // Populate response with success status and user details.
+
+                        response.Email = request.Email;
+                        response.StatusMessage = Constants.MSG_SUCCESS;
+                        response.StatusCode = StatusCodes.Status200OK;
+                    }
+                    else
+                    {
+                        // If saving changes failed, return a not found status.
+
+                        response.Email = request.Email;
+                        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                        response.StatusCode = StatusCodes.Status404NotFound;
+                    }
+                }
                 else
                 {
                     // If no matching user is found, return a not found status.
-                    response.Username = request.Username;
+
                     response.Email = request.Email;
                     response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
                     response.StatusCode = StatusCodes.Status404NotFound;
@@ -157,7 +167,7 @@ namespace AuthGuardPro_Application.Repos.Services
             }
             catch (Exception ex)
             {
-                _logger.LocalLogs(ex);
+                await _logger.LocalLogs(ex);
                 // Log or handle the exception as needed. Re-throwing allows higher-level error handling.
                 throw;
             }
@@ -182,47 +192,47 @@ namespace AuthGuardPro_Application.Repos.Services
                     return response;
                 }
 
-                //// Find an existing user by username and email who is not already marked as deleted.
-                //User existedUser = (await _userContext.GetAllAsync())?.ToList()?
-                //    .FirstOrDefault(x =>
-                //        x.Username.ToLower() == request.Username.ToLower() &&
-                //        x.Email.ToLower() == request.Email.ToLower() &&
-                //        x.IsDeleted == false);
+                // Find an existing user by username and email who is not already marked as deleted.
+                User existedUser = (await _userContext.GetAllAsync())?.ToList()?
+                    .FirstOrDefault(x =>
 
-                //if (existedUser != null)
-                //{
-                //    // Generate a new salt and hash the new password with the salt.
-                //    string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
-                //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password + salt);
+                        x.Email.ToLower() == request.Email.ToLower() &&
+                        x.DeleteStatus == false);
 
-                //    // Update the user with the new password hash, salt, and timestamp.
-                //    existedUser.PasswordHash = hashedPassword;
-                //    existedUser.Salt = salt;
-                //    existedUser.DateUpdated = DateTime.Now;
-                //    await _userContext.UpdateAsync(existedUser);
+                if (existedUser != null)
+                {
+                    // Generate a new salt and hash the new password with the salt.
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password + salt);
 
-                //    // Save changes and check if the password reset was successful.
-                //    if (await _userContext.SaveChangesAsync() > 0)
-                //    {
-                //        // Populate response with success status and user details.
-                //        response.Username = request.Username;
-                //        response.Email = request.Email;
-                //        response.StatusMessage = Constants.MSG_SUCCESS;
-                //        response.StatusCode = StatusCodes.Status200OK;
-                //    }
-                //    else
-                //    {
-                //        // If saving changes failed, return a not found status.
-                //        response.Username = request.Username;
-                //        response.Email = request.Email;
-                //        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                //        response.StatusCode = StatusCodes.Status404NotFound;
-                //    }
-                //}
-                //else
+                    // Update the user with the new password hash, salt, and timestamp.
+                    existedUser.PasswordHash = hashedPassword;
+                    existedUser.Salt = salt;
+                    existedUser.UpdatedAt = DateTime.Now;
+                    await _userContext.UpdateAsync(existedUser);
+
+                    // Save changes and check if the password reset was successful.
+                    if (await _userContext.SaveChangesAsync() > 0)
+                    {
+                        // Populate response with success status and user details.
+
+                        response.Email = request.Email;
+                        response.StatusMessage = Constants.MSG_SUCCESS;
+                        response.StatusCode = StatusCodes.Status200OK;
+                    }
+                    else
+                    {
+                        // If saving changes failed, return a not found status.
+
+                        response.Email = request.Email;
+                        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                        response.StatusCode = StatusCodes.Status404NotFound;
+                    }
+                }
+                else
                 {
                     // If no matching user is found, return a not found status.
-                    response.Username = request.Username;
+
                     response.Email = request.Email;
                     response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
                     response.StatusCode = StatusCodes.Status404NotFound;
@@ -232,7 +242,7 @@ namespace AuthGuardPro_Application.Repos.Services
             }
             catch (Exception ex)
             {
-                _logger.LocalLogs(ex);
+                await _logger.LocalLogs(ex);
                 // Log or handle the exception as needed. Re-throwing allows higher-level error handling.
                 throw;
             }
@@ -248,52 +258,55 @@ namespace AuthGuardPro_Application.Repos.Services
                     response.StatusCode = StatusCodes.Status204NoContent;
                     response.StatusMessage = Constants.MSG_REQ_NULL;
                 }
-                //else
-                //{
-                //    User existedUserData = (await _userContext.GetAllAsync())?.FirstOrDefault(x => x.Username.ToLower() == request.Username.ToLower() && x.Email.ToLower() == request.Email && x.IsDeleted == false);
+                else
+                {
+                    User existedUserData = (await _userContext.GetAllAsync())?
+                                                .FirstOrDefault(x =>
+                                                (x.Email.ToLower() == request.Email.ToLower() || x.Phone.ToLower() == request.Phone.ToLower())
+                                                && x.DeleteStatus == false);
 
-                //    if (existedUserData != null)
-                //    {
-                //        string salt = existedUserData.Salt;
-                //        bool verifyPassword = BCrypt.Net.BCrypt.Verify(request.Password + salt, existedUserData.PasswordHash);
+                    if (existedUserData != null)
+                    {
+                        string salt = existedUserData.Salt;
+                        bool verifyPassword = BCrypt.Net.BCrypt.Verify(request.Password + salt, existedUserData.PasswordHash);
 
-                //        if (verifyPassword)
-                //        {
-                //            TokenRequest tokenRequest = new TokenRequest()
-                //            {
-                //                Email = existedUserData.Email,
-                //                UserID = existedUserData.UserId.ToString(),
-                //                UserName = existedUserData.Username 
-                //            };
+                        if (verifyPassword)
+                        {
+                            TokenRequest tokenRequest = new TokenRequest()
+                            {
+                                Email = existedUserData.Email,
+                                UserID = existedUserData.UserId.ToString(),
+
+                            };
 
 
-                //            response.JWTToken = await _authService.TokenGeneration(tokenRequest);
-                //            response.Username = request.Username;
-                //            response.Email = request.Email;
-                //            response.StatusMessage = Constants.MSG_LOGIN_SUCC;
-                //            response.StatusCode = StatusCodes.Status200OK;
-                //        }
-                //        else
-                //        {
-                //            response.Username = request.Username;
-                //            response.Email = request.Email;
-                //            response.StatusCode = StatusCodes.Status400BadRequest;
-                //            response.StatusMessage = Constants.MSG_LOGIN_FAIL;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        response.Username = request.Username;
-                //        response.Email = request.Email;
-                //        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                //        response.StatusCode = StatusCodes.Status404NotFound;
-                //    }
-                //}
+                            response.JWTToken = await _authService.TokenGeneration(tokenRequest);
+
+                            response.Email = request.Email;
+                            response.StatusMessage = Constants.MSG_LOGIN_SUCC;
+                            response.StatusCode = StatusCodes.Status200OK;
+                        }
+                        else
+                        {
+
+                            response.Email = request.Email;
+                            response.StatusCode = StatusCodes.Status400BadRequest;
+                            response.StatusMessage = Constants.MSG_LOGIN_FAIL;
+                        }
+                    }
+                    else
+                    {
+
+                        response.Email = request.Email;
+                        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                        response.StatusCode = StatusCodes.Status404NotFound;
+                    }
+                }
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LocalLogs(ex);
+                await _logger.LocalLogs(ex);
                 throw ex;
             }
         }

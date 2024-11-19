@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Core", "AuthGua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Application", "AuthGuardPro_Application\StayEasePro_Application.csproj", "{DC161F3C-2692-429D-93FC-6E8DE9D6FECA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Infrastucture", "AuthGuardPro_Infrastucture\StayEasePro_Infrastucture.csproj", "{80D52010-94F0-4057-899C-F922D166BD72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Domain", "StayEasePro_Domain\StayEasePro_Domain.csproj", "{03084998-D7B6-4762-AD27-570E065BF603}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{DC161F3C-2692-429D-93FC-6E8DE9D6FECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC161F3C-2692-429D-93FC-6E8DE9D6FECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC161F3C-2692-429D-93FC-6E8DE9D6FECA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{80D52010-94F0-4057-899C-F922D166BD72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80D52010-94F0-4057-899C-F922D166BD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80D52010-94F0-4057-899C-F922D166BD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80D52010-94F0-4057-899C-F922D166BD72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03084998-D7B6-4762-AD27-570E065BF603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03084998-D7B6-4762-AD27-570E065BF603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03084998-D7B6-4762-AD27-570E065BF603}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03084998-D7B6-4762-AD27-570E065BF603}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

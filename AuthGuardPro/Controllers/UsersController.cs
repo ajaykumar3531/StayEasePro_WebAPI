@@ -4,7 +4,7 @@ using AuthGuardPro_Application.Repos.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
+[Route("api/User")]
 [ApiController]
 public class UsersController : ControllerBase
 {

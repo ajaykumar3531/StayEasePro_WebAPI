@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthGuardPro_Domain\StayEasePro_Core.csproj" />
+    <ProjectReference Include="..\StayEasePro_Domain\StayEasePro_Domain.csproj" />
   </ItemGroup>
 
 </Project>
