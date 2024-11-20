@@ -30,6 +30,8 @@ namespace StayEasePro_Application.CommonRepos.Contracts
         // Bulk update multiple records
         Task BulkSave(List<T> entities);
 
+        Task BulkUpdate(List<T> entities);
+
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> where);
     }
 }

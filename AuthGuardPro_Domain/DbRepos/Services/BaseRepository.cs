@@ -56,6 +56,18 @@ namespace StayEasePro_Application.CommonRepos.Services
             }
         }
 
+        public async Task BulkUpdate(List<T> entities)
+        {
+            try
+            {
+                await _context.BulkUpdateAsync(entities.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task DeleteAsync(T entity)
         {
             try

@@ -1,17 +1,9 @@
 ﻿using AuthGuardPro_Application.DTO_s.DTO;
-using AuthGuardPro_Application.Repos.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using StayEasePro_Application.CommonRepos.Contracts;
 using StayEasePro_Application.Repos.Contracts;
 using StayEasePro_Core.Entities;
 using StayEasePro_Domain.DTO_s.Requests;
 using StayEasePro_Domain.DTO_s.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using static StayEasePro_Domain.Enums.CommonEnums;
 
 namespace StayEasePro_Application.Repos.Services
@@ -283,7 +275,7 @@ namespace StayEasePro_Application.Repos.Services
                 }
 
                 // Fetch properties for the owner
-                var properties = await _unitOfWorkService.Properties.GetAllAsync(x => x.OwnerId == userId);
+                var properties = await _unitOfWorkService.Properties.GetAllAsync(x => x.OwnerId == userId && x.DeleteStatus == false);
                 if (properties == null || !properties.Any())
                 {
                     response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
@@ -315,6 +307,90 @@ namespace StayEasePro_Application.Repos.Services
 
                 response.StatusMessage = Constants.MSG_SUCCESS;
                 response.StatusCode = StatusCodes.Status200OK;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                await _logger.LocalLogs(ex);
+                throw;
+            }
+        }
+        public async Task<DeletePropertyResponse> DeleteProperties(DeletePropertyRequest request, string UserID)
+        {
+            try
+            {
+                DeletePropertyResponse response = new DeletePropertyResponse();
+
+                // Validate UserID
+                if (string.IsNullOrEmpty(UserID) || !Guid.TryParse(UserID, out var userId))
+                {
+                    response.StatusMessage = Constants.MSG_REQ_NULL;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    return response;
+                }
+
+                // Fetch user to validate role
+                var userData = await _unitOfWorkService.Users.GetByIdAsync(userId);
+                if (userData == null || userData.Role != (int)TypeOfUserEnum.Owner)
+                {
+                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                    response.StatusCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                // Validate property IDs
+                if (request.PropertyIDs == null || !request.PropertyIDs.Any())
+                {
+                    response.StatusMessage = Constants.MSG_REQ_NULL;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    return response;
+                }
+
+                // Fetch properties belonging to the user that match the IDs
+                var propertyIds = request.PropertyIDs.Select(id => Guid.Parse(id)).ToList();
+                var properties = await _unitOfWorkService.Properties.GetAllAsync(x => x.OwnerId == userId && propertyIds.Contains(x.PropertyId) && !x.DeleteStatus);
+
+                if (properties == null || !properties.Any())
+                {
+                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                    response.StatusCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                // Collect associated address IDs
+                var addressIds = properties.Select(p => p.AddressId).Distinct().ToList();
+
+                // Mark properties and their addresses as deleted
+                foreach (var property in properties)
+                {
+                    property.DeleteStatus = true;
+                    property.UpdatedAt = DateTime.Now;
+                }
+
+                var addresses = await _unitOfWorkService.Addresses.GetAllAsync(a => addressIds.Contains(a.AddressId) && !a.DeleteStatus);
+                foreach (var address in addresses)
+                {
+                    address.DeleteStatus = true;
+                    address.UpdatedAt = DateTime.Now;
+                }
+
+                // Save changes
+                await _unitOfWorkService.Properties.BulkUpdate(properties.ToList());
+                await _unitOfWorkService.Addresses.BulkUpdate(addresses.ToList());
+
+                if (await _unitOfWorkService.Properties.SaveChangesAsync() > 0)
+                {
+                    response.UserID = UserID;
+                    response.DeletedPropertyIDs = properties.Select(p => p.PropertyId.ToString()).ToList();
+                    response.StatusMessage = Constants.MSG_SUCCESS;
+                    response.StatusCode = StatusCodes.Status200OK;
+                }
+                else
+                {
+                    response.StatusMessage = Constants.MSG_FAILED;
+                    response.StatusCode = StatusCodes.Status500InternalServerError;
+                }
 
                 return response;
             }

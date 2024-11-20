@@ -14,5 +14,6 @@ namespace StayEasePro_Application.Repos.Contracts
         Task<CreatePropertyResponse> CreateProperty(CreatePropertyRequest request, string UserID);
         Task<UpdatePropertyResponse> UpdateProperty(UpdatePropertyRequest request, string UserID);
         Task<LstPropertiesResponse> GetAllProperties(string UserID);
+        Task<DeletePropertyResponse> DeleteProperties(DeletePropertyRequest request, string UserID);
     }
 }
