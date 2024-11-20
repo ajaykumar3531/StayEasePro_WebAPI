@@ -17,7 +17,7 @@ namespace AuthGuardPro_Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBaseRepository<User>, BaseRepository<User>>();
             services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<IOwnerService, OwnerService>();
+            services.AddScoped<IPropertyService, PropertyService>();
 
             return services;
         }

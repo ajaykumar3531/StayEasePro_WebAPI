@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace StayEasePro_Application.Repos.Contracts
 {
-    public interface IOwnerService
+    public interface IPropertyService
     {
         Task<CreatePropertyResponse> CreateProperty(CreatePropertyRequest request, string UserID);
         Task<UpdatePropertyResponse> UpdateProperty(UpdatePropertyRequest request, string UserID);
+        Task<LstPropertiesResponse> GetAllProperties(string UserID);
     }
 }

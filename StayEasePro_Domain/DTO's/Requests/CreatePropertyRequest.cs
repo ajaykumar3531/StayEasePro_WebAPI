@@ -13,6 +13,7 @@ namespace StayEasePro_Domain.DTO_s.Requests
 
     public class PropertyDetails
     {
+       
         public string PropertyID { get; set; }
         public string? PropertyName { get; set; }
 

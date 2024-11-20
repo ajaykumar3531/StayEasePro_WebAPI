@@ -1,5 +1,6 @@
 ﻿using AuthGuardPro_Application.DTO_s.DTO;
 using AuthGuardPro_Application.Repos.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using StayEasePro_Application.CommonRepos.Contracts;
 using StayEasePro_Application.Repos.Contracts;
 using StayEasePro_Core.Entities;
@@ -15,12 +16,12 @@ using static StayEasePro_Domain.Enums.CommonEnums;
 
 namespace StayEasePro_Application.Repos.Services
 {
-    public class OwnerService : IOwnerService
+    public class PropertyService : IPropertyService
     {
         private readonly IUnitOfWorkService _unitOfWorkService;
         private readonly ILoggerService _logger;
 
-        public OwnerService(IUnitOfWorkService unitOfWorkService, ILoggerService logger)
+        public PropertyService(IUnitOfWorkService unitOfWorkService, ILoggerService logger)
         {
             _unitOfWorkService = unitOfWorkService;
             _logger = logger;
@@ -50,8 +51,7 @@ namespace StayEasePro_Application.Repos.Services
                         {
                             if (request.PropertyDetails != null && request.PropertyDetails.Any())
                             {
-                                // List to hold properties to save
-                                List<Property> properties = new List<Property>();
+                               var properties = new List<StayEasePro_Core.Entities.Property>();
 
                                 foreach (var propertyData in request.PropertyDetails)
                                 {
@@ -67,15 +67,15 @@ namespace StayEasePro_Application.Repos.Services
                                             ZipCode = propertyData.ZipCode,
                                             DeleteStatus = false,
                                             CreatedAt = DateTime.Now,
-                                            UpdatedAt =DateTime.Now
+                                            UpdatedAt = DateTime.Now
                                         };
 
                                         // Add the address to the database (first save the address)
                                         await _unitOfWorkService.Addresses.AddAsync(address);
-                                        if(await _unitOfWorkService.Addresses.SaveChangesAsync() > 0)
+                                        if (await _unitOfWorkService.Addresses.SaveChangesAsync() > 0)
                                         {
                                             // Create and add the Property with the newly created AddressID
-                                            Property property = new Property
+                                            StayEasePro_Core.Entities.Property property = new StayEasePro_Core.Entities.Property
                                             {
                                                 OwnerId = Guid.TryParse(UserID.ToUpper(), out var ownerGuid) ? ownerGuid : new Guid(),
                                                 PropertyName = propertyData.PropertyName,
@@ -92,9 +92,9 @@ namespace StayEasePro_Application.Repos.Services
                                             response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
                                             response.StatusCode = StatusCodes.Status404NotFound;
                                         }
-                                    
 
-                                      
+
+
                                     }
                                 }
 
@@ -107,11 +107,11 @@ namespace StayEasePro_Application.Repos.Services
                                     if (true)
                                     {
                                         response.UserID = UserID;
-                                      
+
                                         response.StatusMessage = Constants.MSG_SUCCESS;
                                         response.StatusCode = StatusCodes.Status200OK;
                                     }
-                                    
+
                                 }
                             }
                         }
@@ -127,9 +127,9 @@ namespace StayEasePro_Application.Repos.Services
                         response.StatusCode = StatusCodes.Status404NotFound;
                     }
                 }
-                
 
-               
+
+
 
                 return response;
             }
@@ -139,7 +139,6 @@ namespace StayEasePro_Application.Repos.Services
                 throw;
             }
         }
-
         public async Task<UpdatePropertyResponse> UpdateProperty(UpdatePropertyRequest request, string UserID)
         {
             try
@@ -181,7 +180,7 @@ namespace StayEasePro_Application.Repos.Services
                             // Find the property by PropertyId
                             if (Guid.TryParse(propertyData.PropertyID, out var propertyId))
                             {
-                                Property property = await _unitOfWorkService.Properties.GetByIdAsync(propertyId);
+                                var property = await _unitOfWorkService.Properties.GetByIdAsync(propertyId);
 
                                 if (property != null)
                                 {
@@ -212,7 +211,7 @@ namespace StayEasePro_Application.Repos.Services
                                     }
 
                                     // Save the updated property
-                                   await _unitOfWorkService.Properties.UpdateAsync(property);
+                                    await _unitOfWorkService.Properties.UpdateAsync(property);
                                 }
                                 else
                                 {
@@ -256,7 +255,76 @@ namespace StayEasePro_Application.Repos.Services
                 await _logger.LocalLogs(ex);
                 throw;
             }
+
+
+
         }
+        public async Task<LstPropertiesResponse> GetAllProperties(string UserID)
+        {
+            try
+            {
+                LstPropertiesResponse response = new LstPropertiesResponse();
+
+                // Validate UserID
+                if (string.IsNullOrEmpty(UserID) || !Guid.TryParse(UserID, out var userId))
+                {
+                    response.StatusMessage = Constants.MSG_REQ_NULL;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    return response;
+                }
+
+                // Validate user and role
+                var userData = await _unitOfWorkService.Users.GetByIdAsync(userId);
+                if (userData == null || userData.Role != (int)TypeOfUserEnum.Owner)
+                {
+                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                    response.StatusCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                // Fetch properties for the owner
+                var properties = await _unitOfWorkService.Properties.GetAllAsync(x => x.OwnerId == userId);
+                if (properties == null || !properties.Any())
+                {
+                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                    response.StatusCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                // Fetch all related addresses in a single query
+                var addressIds = properties.Select(p => p.AddressId).Distinct().ToList();
+                var addresses = await _unitOfWorkService.Addresses.GetAllAsync(a => addressIds.Contains(a.AddressId));
+
+                // Prepare response
+                response.UserID = UserID;
+                response.PropertyDetails = properties.Select(property =>
+                {
+                    var address = addresses.FirstOrDefault(a => a.AddressId == property.AddressId);
+                    return new PropertyDetails
+                    {
+                        PropertyID = property.PropertyId.ToString().ToUpper(),
+                        PropertyName = property.PropertyName,
+                        TotalRooms = property.TotalRooms,
+                        Street = address?.Street,
+                        City = address?.City,
+                        State = address?.State,
+                        Country = address?.Country,
+                        ZipCode = address?.ZipCode
+                    };
+                }).ToList();
+
+                response.StatusMessage = Constants.MSG_SUCCESS;
+                response.StatusCode = StatusCodes.Status200OK;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                await _logger.LocalLogs(ex);
+                throw;
+            }
+        }
+
 
     }
 }
