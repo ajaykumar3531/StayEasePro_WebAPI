@@ -1,11 +1,11 @@
-﻿using AuthGuardPro_Application.Repos.Contracts;
+﻿using StayEasePro_Application.CommonRepos.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthGuardPro_Application.Repos.Services
+namespace StayEasePro_Application.CommonRepos.Services
 {
     public class LoggerService : ILoggerService
     {

@@ -1,24 +1,24 @@
 ﻿using AuthGuardPro_Application.DTO_s.Requests;
-using AuthGuardPro_Application.Repos.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using StayEasePro_Application.CommonRepos.Contracts;
 using StayEasePro_Domain.DTO_s.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace AuthGuardPro_Application.Repos.Services
+namespace StayEasePro_Application.CommonRepos.Services
 {
     // This service implements the IJWTTokenGeneration interface, providing a method to generate JWT tokens
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration; // IConfiguration instance to access app settings
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILoggerService _loggerService; 
+        private readonly ILoggerService _loggerService;
 
-        public AuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor,ILoggerService loggerService)
+        public AuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILoggerService loggerService)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
@@ -60,7 +60,7 @@ namespace AuthGuardPro_Application.Repos.Services
                 signingCredentials: credentials // Set signing credentials using the HMAC-SHA256 key
             );
 
-            
+
             // Serialize the token into a JWT string and return it to the caller
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -89,7 +89,7 @@ namespace AuthGuardPro_Application.Repos.Services
                 }
                 else
                 {
-                    
+
                     throw new UnauthorizedAccessException("User is not authenticated.");
                 }
             }

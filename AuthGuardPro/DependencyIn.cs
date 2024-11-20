@@ -1,6 +1,5 @@
 ﻿using AuthGuardPro_Application;
 using AuthGuardPro_Core;
-using AuthGuardPro_Infrastucture;
 
 namespace AuthGuardPro
 {

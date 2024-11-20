@@ -1,8 +1,8 @@
 ﻿using AuthGuardPro_Application.DTO_s.Requests;
-using AuthGuardPro_Application.DTO_s.Responses;
-using AuthGuardPro_Application.Repos.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StayEasePro_Application.CommonRepos.Contracts;
+using StayEasePro_Application.Repos.Contracts;
 using StayEasePro_Domain.DTO_s.DTO;
 
 [Route("api/User")]

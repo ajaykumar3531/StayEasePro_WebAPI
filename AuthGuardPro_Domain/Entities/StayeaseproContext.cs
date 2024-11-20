@@ -15,6 +15,8 @@ public partial class StayeaseproContext : DbContext
     {
     }
 
+    public virtual DbSet<Address> Addresses { get; set; }
+
     public virtual DbSet<Property> Properties { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
@@ -23,12 +25,31 @@ public partial class StayeaseproContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=WSIN63;Database=Stayeasepro;Integrated Security=True;TrustServerCertificate=True;");
-
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.HasKey(e => e.AddressId).HasName("PK__Address__091C2A1B66BDEAF1");
+
+            entity.ToTable("Address");
+
+            entity.Property(e => e.AddressId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("AddressID");
+            entity.Property(e => e.City).HasMaxLength(100);
+            entity.Property(e => e.Country).HasMaxLength(100);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.State).HasMaxLength(100);
+            entity.Property(e => e.Street).HasMaxLength(255);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ZipCode).HasMaxLength(20);
+        });
+
         modelBuilder.Entity<Property>(entity =>
         {
             entity.HasKey(e => e.PropertyId).HasName("PK__Property__70C9A75538298713");
@@ -38,7 +59,7 @@ public partial class StayeaseproContext : DbContext
             entity.Property(e => e.PropertyId)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("PropertyID");
-            entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.AddressId).HasColumnName("AddressID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -47,6 +68,11 @@ public partial class StayeaseproContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.Properties)
+                .HasForeignKey(d => d.AddressId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Property__Addres__5629CD9C");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.Properties)
                 .HasForeignKey(d => d.OwnerId)

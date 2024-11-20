@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthGuardPro_Infrastucture.Repository.Contracts
+namespace StayEasePro_Application.CommonRepos.Contracts
 {
     public interface IBaseRepository<T> where T : class
     {
@@ -25,5 +26,10 @@ namespace AuthGuardPro_Infrastucture.Repository.Contracts
 
         // Save changes to the database
         Task<int> SaveChangesAsync();
+
+        // Bulk update multiple records
+        Task BulkSave(List<T> entities);
+
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> where);
     }
 }

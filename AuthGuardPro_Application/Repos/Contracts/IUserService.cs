@@ -1,7 +1,7 @@
 ﻿using AuthGuardPro_Application.DTO_s.Requests;
 using AuthGuardPro_Application.DTO_s.Responses;
 
-namespace AuthGuardPro_Application.Repos.Contracts
+namespace StayEasePro_Application.Repos.Contracts
 {
     public interface IUserService
     {

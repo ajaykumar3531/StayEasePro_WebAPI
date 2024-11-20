@@ -1,8 +1,8 @@
 ﻿using AuthGuardPro_Application.DTO_s.DTO;
 using AuthGuardPro_Application.DTO_s.Requests;
 using AuthGuardPro_Application.DTO_s.Responses;
-using AuthGuardPro_Application.Repos.Contracts;
-using AuthGuardPro_Infrastucture.Repository.Contracts;
+using StayEasePro_Application.CommonRepos.Contracts;
+using StayEasePro_Application.Repos.Contracts;
 using StayEasePro_Core.Entities;
 
 namespace AuthGuardPro_Application.Repos.Services

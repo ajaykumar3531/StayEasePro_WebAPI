@@ -1,8 +1,7 @@
-﻿using AuthGuardPro_Application.Repos.Contracts;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-
+using StayEasePro_Application.CommonRepos.Contracts;
 
 public class CustomAuthorizeUserMiddleware
 {

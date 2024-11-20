@@ -11,8 +11,6 @@ public partial class Property
 
     public string? PropertyName { get; set; }
 
-    public string? Address { get; set; }
-
     public long TotalRooms { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -20,6 +18,10 @@ public partial class Property
     public DateTime UpdatedAt { get; set; }
 
     public bool DeleteStatus { get; set; }
+
+    public Guid AddressId { get; set; }
+
+    public virtual Address Address { get; set; } = null!;
 
     public virtual User Owner { get; set; } = null!;
 

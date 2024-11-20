@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthGuardPro_Application.Repos.Contracts
+namespace StayEasePro_Application.CommonRepos.Contracts
 {
     public interface IAuthService
     {
         Task<string> TokenGeneration(TokenRequest request);
 
-        Task AuthorizeUser(); 
+        Task AuthorizeUser();
     }
 }

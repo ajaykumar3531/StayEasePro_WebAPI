@@ -1,8 +1,9 @@
-﻿using AuthGuardPro_Application.Repos.Contracts;
-using AuthGuardPro_Application.Repos.Services;
-using AuthGuardPro_Infrastucture.Repository.Contracts;
-using AuthGuardPro_Infrastucture.Repository.Services;
+﻿using AuthGuardPro_Application.Repos.Services;
 using Microsoft.Extensions.DependencyInjection;
+using StayEasePro_Application.CommonRepos.Contracts;
+using StayEasePro_Application.CommonRepos.Services;
+using StayEasePro_Application.Repos.Contracts;
+using StayEasePro_Application.Repos.Services;
 using StayEasePro_Core.Entities;
 
 namespace AuthGuardPro_Application
@@ -16,6 +17,7 @@ namespace AuthGuardPro_Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBaseRepository<User>, BaseRepository<User>>();
             services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<IOwnerService, OwnerService>();
 
             return services;
         }
