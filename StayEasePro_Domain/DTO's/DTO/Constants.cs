@@ -40,6 +40,18 @@ namespace AuthGuardPro_Application.DTO_s.DTO
         public const string MSG_REQ_NULL = "The request is null";
         public const string MSG_APMT_SUCC = "Doctor Appointment Scheduled Successfull";
         public const string MSG_APMT_FAIL = "Doctor Appointment Not Scheduled";
+        public const string MSG_INVALID_USER_ID = "Invalid User ID.";
+        public const string MSG_UNAUTHORIZED = "User is not authorized to perform this action.";
+        public const string MSG_INVALID_PROPERTY_ID = "Invalid Property ID.";
+        public const string MSG_PROPERTY_NOT_FOUND_OR_UNAUTHORIZED = "Property not found or user is unauthorized.";
+        public const string MSG_NO_ROOM_DETAILS = "No room details provided.";
+
+        public const string MSG_EXCEPTION = "An error occurred while processing your request.";
+        public const string MSG_INVALID_REQUEST = "Invalid request. Please provide valid Property ID and User ID.";
+    
+        public const string MSG_NO_ROOMS_FOUND = "No rooms found for the specified property.";
+
+        public const string MSG_UNAUTHORIZED_DELETE = "You do not have permission to delete one or more of the rooms.";
         #endregion
 
     }
