@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StayEasePro_Domain.DTO_s.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace AuthGuardPro_Application.DTO_s.Requests
 {
     public class CreateUserRequest
     {
-      
+
         public short Role { get; set; }
 
         public string? FirstName { get; set; }
@@ -21,13 +22,12 @@ namespace AuthGuardPro_Application.DTO_s.Requests
 
         public string Password { get; set; } = null!;
 
-        public string? Address { get; set; }
+        public AddressDTO AddressDetails { get; set; } = new AddressDTO();
+        public DateTime JoinedDate { get; set; }
 
-        public DateTime JoinedDate { get;set; }
+        public DateTime ExpectedJoindDate { get; set; }
 
-        public DateTime ExpectedJoindDate { get;set;}
-
-        public DateOnly DOB {  get;set; }   
+        public DateOnly DOB { get; set; }
 
     }
 }

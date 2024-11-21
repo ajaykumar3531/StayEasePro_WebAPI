@@ -3,7 +3,10 @@ using AuthGuardPro_Application.DTO_s.Requests;
 using AuthGuardPro_Application.DTO_s.Responses;
 using StayEasePro_Application.CommonRepos.Contracts;
 using StayEasePro_Application.Repos.Contracts;
+using StayEasePro_Core.DbRepos.Services;
 using StayEasePro_Core.Entities;
+using StayEasePro_Domain.DTO_s.Requests;
+using StayEasePro_Domain.DTO_s.Responses;
 
 namespace AuthGuardPro_Application.Repos.Services
 {
@@ -12,11 +15,13 @@ namespace AuthGuardPro_Application.Repos.Services
         private readonly IBaseRepository<User> _userContext;
         private readonly IAuthService _authService;
         private readonly ILoggerService _logger;
-        public UserService(IBaseRepository<User> userContext, IAuthService authService, ILoggerService logger)
+        private readonly IUnitOfWorkService _unitOfWorkService;
+        public UserService(IBaseRepository<User> userContext, IAuthService authService, ILoggerService logger, IUnitOfWorkService unitOfWorkService)
         {
             _userContext = userContext;
             _authService = authService;
             _logger = logger;
+            _unitOfWorkService = unitOfWorkService;
         }
 
         /// <summary>
@@ -60,7 +65,6 @@ namespace AuthGuardPro_Application.Repos.Services
                     var userData = new User()
                     {
                         Email = request.Email,
-                        Address = request.Address,
                         FirstName = request.FirstName,
                         LastName = request.LastName,
                         DeleteStatus = false,
@@ -70,9 +74,7 @@ namespace AuthGuardPro_Application.Repos.Services
                         Role = request.Role,
                         DateOfBirth = request.DOB,
                         JoinedDate = request.JoinedDate,
-                        ExpectedJoinDate = request.ExpectedJoindDate,
-
-
+                        ExpectedJoinDate = request.ExpectedJoindDate
                     };
 
                     // Add the new user to the context and save changes.
@@ -285,7 +287,7 @@ namespace AuthGuardPro_Application.Repos.Services
                             response.Email = request.Email;
                             response.StatusMessage = Constants.MSG_LOGIN_SUCC;
                             response.StatusCode = StatusCodes.Status200OK;
-                           
+
                         }
                         else
                         {
@@ -311,5 +313,106 @@ namespace AuthGuardPro_Application.Repos.Services
                 throw ex;
             }
         }
+
+        public async Task<JoinDetailsResponse> JoinUser(JoinDetailsRequest request)
+        {
+            var response = new JoinDetailsResponse();
+
+            try
+            {
+                // Validate the request
+                if (request == null || string.IsNullOrEmpty(request.UserId) || request.AddressDetails == null || string.IsNullOrEmpty(request.RoomId))
+                {
+                    response.StatusMessage = Constants.MSG_INVALID_REQUEST;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    return response;
+                }
+
+                // Parse UserId and RoomId
+                if (!Guid.TryParse(request.UserId, out var userGuid) || !Guid.TryParse(request.RoomId, out var roomGuid))
+                {
+                    response.StatusMessage = Constants.MSG_INVALID_REQUEST;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    return response;
+                }
+
+                // Fetch the user from the database
+                var user = await _unitOfWorkService.Users.GetByIdAsync(userGuid);
+                if (user == null)
+                {
+                    response.StatusMessage = Constants.MSG_USER_NOT_FOUND;
+                    response.StatusCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                // Add the address data to the Address table
+                var address = new Address
+                {
+                    Street = request.AddressDetails.Street,
+                    City = request.AddressDetails.City,
+                    State = request.AddressDetails.State,
+                    Country = request.AddressDetails.Country,
+                    ZipCode = request.AddressDetails.ZipCode,
+                    DeleteStatus = false,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                await _unitOfWorkService.Addresses.AddAsync(address);
+
+                if (await _unitOfWorkService.Addresses.SaveChangesAsync() <= 0)
+                {
+                    response.StatusMessage = Constants.MSG_ADDRESS_SAVE_FAILED;
+                    response.StatusCode = StatusCodes.Status500InternalServerError;
+                    return response;
+                }
+
+                // Update the user's AddressId
+                user.AddressId = address.AddressId;
+                await _unitOfWorkService.Users.UpdateAsync(user);
+
+                if (await _unitOfWorkService.Users.SaveChangesAsync() <= 0)
+                {
+                    response.StatusMessage = Constants.MSG_USER_UPDATE_FAILED;
+                    response.StatusCode = StatusCodes.Status500InternalServerError;
+                    return response;
+                }
+
+                // Create a tenant record
+                var tenant = new Tenant
+                {
+                    TenantId = Guid.NewGuid(),
+                    UserId = userGuid,
+                    RoomId = roomGuid,
+                    CheckInDate = DateTime.Now,
+                    RentDueDate = DateTime.Now.AddMonths(1), // Assuming rent is due in 1 month
+                    ActiveStatus = true,
+
+                };
+                await _unitOfWorkService.Tenants.AddAsync(tenant);
+
+                if (await _unitOfWorkService.Tenants.SaveChangesAsync() > 0)
+                {
+                    response.StatusMessage = Constants.MSG_SUCCESS;
+                    response.StatusCode = StatusCodes.Status200OK;
+                    response.UserId = request.UserId;
+                    response.AddressId = address.AddressId.ToString();
+                    response.TenantId = tenant.TenantId.ToString();
+                }
+                else
+                {
+                    response.StatusMessage = Constants.MSG_TENANT_SAVE_FAILED;
+                    response.StatusCode = StatusCodes.Status500InternalServerError;
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logger.LocalLogs(ex);
+                response.StatusMessage = Constants.MSG_EXCEPTION;
+                response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+
+            return response;
+        }
+
     }
 }

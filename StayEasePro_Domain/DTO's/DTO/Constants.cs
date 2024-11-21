@@ -48,10 +48,20 @@ namespace AuthGuardPro_Application.DTO_s.DTO
 
         public const string MSG_EXCEPTION = "An error occurred while processing your request.";
         public const string MSG_INVALID_REQUEST = "Invalid request. Please provide valid Property ID and User ID.";
-    
+
         public const string MSG_NO_ROOMS_FOUND = "No rooms found for the specified property.";
 
         public const string MSG_UNAUTHORIZED_DELETE = "You do not have permission to delete one or more of the rooms.";
+
+
+
+        public const string MSG_USER_NOT_FOUND = "User not found.";
+        public const string MSG_ADDRESS_SAVE_FAILED = "Failed to save address.";
+        public const string MSG_USER_UPDATE_FAILED = "Failed to update user data.";
+        public const string MSG_TENANT_SAVE_FAILED = "Failed to create tenant record.";
+
+
+
         #endregion
 
     }

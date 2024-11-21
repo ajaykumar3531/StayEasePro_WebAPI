@@ -21,8 +21,6 @@ public partial class User
 
     public string Salt { get; set; } = null!;
 
-    public string? Address { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
@@ -34,6 +32,10 @@ public partial class User
     public bool DeleteStatus { get; set; }
 
     public DateOnly? DateOfBirth { get; set; }
+
+    public short Gender { get; set; }
+
+    public Guid? AddressId { get; set; }
 
     public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
 

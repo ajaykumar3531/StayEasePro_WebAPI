@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using StayEasePro_Application.CommonRepos.Contracts;
 using StayEasePro_Application.Repos.Contracts;
 using StayEasePro_Domain.DTO_s.DTO;
+using StayEasePro_Domain.DTO_s.Requests;
 
 [Route("api/User")]
 [ApiController]
@@ -110,6 +111,27 @@ public class UsersController : ControllerBase
     }
 
 
+   // [Authorize]
+    [HttpPost("JoinUser")]
+    public async Task<IActionResult> JoinUser(JoinDetailsRequest request)
+    {
+        try
+        {
+            // string UserID = GlobalUserContext.UserID.ToUpper();
+            string UserID = "2FFD76E6-4638-4214-8963-5DC5B6006C6A";
+            request.UserId = UserID.ToUpper();
+            var response = await _userService.JoinUser(request);
+            if (response.StatusCode == StatusCodes.Status200OK && !string.IsNullOrEmpty(response.StatusMessage))
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+        catch (Exception ex)
+        {
+            await _loggerService.LocalLogs(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
 
 }
