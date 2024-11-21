@@ -368,6 +368,7 @@ namespace AuthGuardPro_Application.Repos.Services
 
                 // Update the user's AddressId
                 user.AddressId = address.AddressId;
+                user.PropertyId = Guid.Parse(request.PropertyID);
                 await _unitOfWorkService.Users.UpdateAsync(user);
 
                 if (await _unitOfWorkService.Users.SaveChangesAsync() <= 0)

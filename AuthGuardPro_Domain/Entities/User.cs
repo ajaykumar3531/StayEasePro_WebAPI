@@ -37,6 +37,8 @@ public partial class User
 
     public Guid? AddressId { get; set; }
 
+    public Guid? PropertyId { get; set; }
+
     public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
 
     public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();

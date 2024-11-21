@@ -149,6 +149,7 @@ public partial class StayeaseproContext : DbContext
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.PasswordHash).HasMaxLength(256);
             entity.Property(e => e.Phone).HasMaxLength(15);
+            entity.Property(e => e.PropertyId).HasColumnName("PropertyID");
             entity.Property(e => e.Salt).HasMaxLength(256);
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
