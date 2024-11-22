@@ -62,7 +62,7 @@ namespace StayEasePro_WEBAPP.Services.Contracts
             }
         }
 
-        public async Task<T> PostAsync<T>(string url, object data)
+        public async Task<T> PostAsync<T>(string url, T data)
         {
             try
             {
@@ -87,10 +87,10 @@ namespace StayEasePro_WEBAPP.Services.Contracts
 
                 return JsonConvert.DeserializeObject<T>(responseContent);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException ex)
             {
                 // Log and rethrow if necessary
-                throw new Exception("An error occurred while sending the POST request.", e);
+                throw new Exception("An error occurred while sending the POST request.", ex);
             }
             catch (Exception e)
             {
@@ -99,7 +99,7 @@ namespace StayEasePro_WEBAPP.Services.Contracts
             }
         }
 
-        public async Task<T> PutAsync<T>(string url, object data)
+        public async Task<T> PutAsync<T>(string url, T data)
         {
             try
             {
