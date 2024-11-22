@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_Domain", "StayEasePro_Domain\StayEasePro_Domain.csproj", "{03084998-D7B6-4762-AD27-570E065BF603}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StayEasePro_WEBAPP", "StayEasePro_WEBAPP\StayEasePro_WEBAPP.csproj", "{9C3B6FDA-2A9D-45F5-8BF3-12EEEBECF81C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +35,15 @@ Global
 		{03084998-D7B6-4762-AD27-570E065BF603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03084998-D7B6-4762-AD27-570E065BF603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03084998-D7B6-4762-AD27-570E065BF603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C3B6FDA-2A9D-45F5-8BF3-12EEEBECF81C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3B6FDA-2A9D-45F5-8BF3-12EEEBECF81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3B6FDA-2A9D-45F5-8BF3-12EEEBECF81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3B6FDA-2A9D-45F5-8BF3-12EEEBECF81C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8DE7F50-78B2-41B1-9EE0-341E028DA1D2}
 	EndGlobalSection
 EndGlobal

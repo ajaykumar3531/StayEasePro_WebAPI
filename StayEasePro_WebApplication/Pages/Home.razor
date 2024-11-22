@@ -1,0 +1,62 @@
+﻿@page "/"
+@using StayEasePro_WebApplication.Pages.Auth
+@using StayEasePro_WebApplication.Pages.Components
+
+
+
+<SignInOutSetup></SignInOutSetup>
+
+@* <div class="row mt-3 row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var data in dynamicDataList)
+    {
+        <div class="col">
+            <DynamicCardComponent Value="@data.Value"
+                                  ChangePercentage="@data.ChangePercentage"
+                                  Description="@data.Description"
+                                  Icon="@data.Icon">
+            </DynamicCardComponent>
+        </div>
+    }
+</div> *@
+
+@code {
+    private List<DynamicData> dynamicDataList = new List<DynamicData>
+    {
+        new DynamicData
+        {
+            Value = 236,
+            ChangePercentage = 18.33,
+            Description = "New Clients",
+            Icon = "bi-person-add"  
+        },
+        new DynamicData
+        {
+            Value = 145,
+            ChangePercentage = -5.25,
+            Description = "New Orders",
+            Icon = "bi-cart-plus" 
+        },
+        new DynamicData
+        {
+            Value = 567,
+            ChangePercentage = 8.75,
+            Description = "Website Traffic",
+            Icon = "bi-traffic-cone"  
+        },
+        new DynamicData
+        {
+            Value = 1023,
+            ChangePercentage = 12.50,
+            Description = "Sales Growth",
+            Icon = "bi-graph-up-arrow" 
+        }
+    };
+
+    public class DynamicData
+    {
+        public int Value { get; set; }
+        public double ChangePercentage { get; set; }
+        public string Description { get; set; }
+        public string Icon { get; set; } // Icon name or path
+    }
+}

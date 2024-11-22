@@ -1,0 +1,63 @@
+﻿@using StayEasePro_WebApplication.Data.DTO_s
+@using static StayEasePro_WebApplication.Data.Enums.CommonEnums
+
+<EditForm EditContext="@editContext" OnValidSubmit="HandleSignUp">
+    <DataAnnotationsValidator />
+
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="firstName" class="form-label">First Name</label>
+            <InputText class="form-control" @bind-Value="signUpModel.FirstName" placeholder="Enter your first name" />
+            <ValidationMessage For="@(() => signUpModel.FirstName)" class="text-danger" />
+        </div>
+        <div class="col-md-6">
+            <label for="lastName" class="form-label">Last Name</label>
+            <InputText class="form-control" @bind-Value="signUpModel.LastName" placeholder="Enter your last name" />
+            <ValidationMessage For="@(() => signUpModel.LastName)" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email Address</label>
+        <InputText class="form-control" @bind-Value="signUpModel.Email" placeholder="Enter your email" />
+        <ValidationMessage For="@(() => signUpModel.Email)" class="text-danger" />
+    </div>
+
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+        </div>
+        <InputText type="password" class="form-control" @bind-Value="signUpModel.Password" placeholder="Enter your password" />
+        <ValidationMessage For="@(() => signUpModel.Password)" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-dark w-100 py-8 mb-4 rounded-1">Sign Up</button>
+</EditForm>
+
+<div class="d-flex align-items-center">
+    <p class="fs-12 mb-0 fw-medium">Already have an account?</p>
+    <div class="text-primary fw-bolder ms-2 cursor" @onclick="NavigateToSignIn">Sign In Now</div>
+</div>
+
+@code {
+    private SignUpModel signUpModel { get; set; } = new SignUpModel();
+    private EditContext editContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(signUpModel);
+    }
+
+    public async Task HandleSignUp()
+    {
+        // This is only called when the form is valid.
+        NavigationManager.NavigateTo("/welcome");
+    }
+
+    public void NavigateToSignIn()
+    {
+        var signInUrl = $"/signinout/{SignInOutEnum.SignIn.ToString()}";
+        NavigationManager.NavigateTo(signInUrl, forceLoad: true);
+    }
+}

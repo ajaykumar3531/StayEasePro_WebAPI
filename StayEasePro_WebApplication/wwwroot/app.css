@@ -1,0 +1,77 @@
+/* Custom card dimensions */
+.custom-card {
+    width: 300px; /* Decrease width */
+    /* Increase height */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    /* Optional: Ensure hover effect still works */
+    .custom-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* More prominent shadow */
+    }
+
+/* Adjust card content to fit the new height if necessary */
+.card-body {
+    padding: 1rem; /* Adjust padding to better fit the new card height */
+}
+
+.rounded {
+    border-radius: 220px;
+}
+
+.auth-bg {
+    background: url('assets/login-bg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.carousel-indicators {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-right: 15%;
+    margin-bottom: 1rem;
+    margin-left: 15%;
+}
+
+/* Style the logo text */
+.logo-img {
+    font-family: 'Lora', serif; /* Elegant serif font for a clean, professional look */
+    font-weight: 200; /* Bold text for better visibility */
+    font-size: 1rem; /* Slightly larger font size for the logo */
+    text-transform: capitalize; /* Keep the text natural with proper capitalization */
+    color: #2c3e50; /* Dark, classic color for a refined look */
+    text-decoration: none; /* Remove underline */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 20px; /* Padding around the text */
+    margin: 0 auto; /* Center the logo */
+    border-radius: 50px; /* Rounded corners to make it look soft */
+    border: 2px solid #2c3e50; /* Thin border around the logo */
+    background-color: white; /* White background for a clean, professional appearance */
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+    /* Logo hover effect */
+    .logo-img:hover {
+        color: #fff; /* Change text color to white on hover */
+        background-color: #2c3e50; /* Dark background color on hover */
+        transform: scale(1.05); /* Slightly enlarge the logo */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for a subtle 3D effect */
+    }
+
+/* Optional: Add a subtle text shadow for additional emphasis */
+.logo-img {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15); /* Light text shadow */
+}
+
+.cursor{
+    cursor:pointer;
+}

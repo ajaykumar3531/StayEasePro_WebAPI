@@ -1,0 +1,58 @@
+﻿@page "/signin"
+@using StayEasePro_WebApplication.Data.DTO_s
+@using static StayEasePro_WebApplication.Data.Enums.CommonEnums
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@signInModel" OnValidSubmit="HandleSignIn">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Email Address Field -->
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email Address</label>
+        <InputText id="exampleInputEmail1" class="form-control" @bind-Value="signInModel.Email" placeholder="Enter your email" />
+        <ValidationMessage For="@(() => signInModel.Email)" class="text-danger" />
+    </div>
+
+    <!-- Password Field -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <a class="text-primary link-dark" href="">Forgot Password?</a>
+        </div>
+        <InputText id="exampleInputPassword1" type="password" class="form-control" @bind-Value="signInModel.Password" placeholder="Enter your password" />
+        <ValidationMessage For="@(() => signInModel.Password)" class="text-danger" />
+    </div>
+
+    <!-- Remember Me Checkbox -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="form-check">
+            <InputCheckbox class="form-check-input primary" id="flexCheckChecked" @bind-Value="signInModel.RememberMe" />
+            <label class="form-check-label text-dark" for="flexCheckChecked">
+                Keep me logged in
+            </label>
+        </div>
+    </div>
+
+    <!-- Sign In Button -->
+    <button type="submit" class="btn btn-dark w-100 py-8 mb-4 rounded-1">Sign In</button>
+</EditForm>
+<div class="d-flex align-items-center">
+    <p class="fs-12 mb-0 fw-medium">Don’t have an account yet?</p>
+    <div  class="text-primary fw-bolder ms-2 cursor" @onclick="NavigateToSignUp">Sign Up Now</div>
+</div>
+@code {
+    private SignInModel signInModel { get; set; } = new SignInModel();
+
+    private void HandleSignIn()
+    {
+        // Handle sign in logic here
+        //NavigationManager.NavigateTo("/dashboard");
+    }
+
+    private void NavigateToSignUp()
+    {
+        // Navigate to Sign In page with IsSignIn=true
+        NavigationManager.NavigateTo($"/signinout/{SignInOutEnum.SignUp.ToString()}",forceLoad:true);
+    }
+}

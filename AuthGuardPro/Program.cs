@@ -9,8 +9,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 // Register controllers with the dependency injection (DI) container
 builder.Services.AddControllers();
 
@@ -85,6 +83,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin", policy =>
+    {
+        policy.AllowAnyOrigin()  // Allow all origins
+              .AllowAnyHeader()  // Allow all headers
+              .AllowAnyMethod(); // Allow all HTTP methods
+    });
+});
 
 var app = builder.Build();
 
