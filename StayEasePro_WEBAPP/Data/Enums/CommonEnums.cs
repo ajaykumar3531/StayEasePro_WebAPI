@@ -7,5 +7,12 @@
             SignIn,
             SignUp
         }
+
+        public enum TypeOfUserEnum
+        {
+            Owner = 1,
+            Manager = 2,
+            Tenet = 3
+        }
     }
 }

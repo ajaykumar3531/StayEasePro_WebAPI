@@ -1,5 +1,9 @@
-﻿@using StayEasePro_WebApplication.Data.DTO_s
+﻿@using AuthGuardPro_Application.DTO_s.DTO
+@using AuthGuardPro_Application.DTO_s.Requests
+@using StayEasePro_WEBAPP.Services.Contracts
+@using StayEasePro_WebApplication.Data.DTO_s
 @using static StayEasePro_WebApplication.Data.Enums.CommonEnums
+@inject IUserService UserService;
 
 <EditForm EditContext="@editContext" OnValidSubmit="HandleSignUp">
     <DataAnnotationsValidator />
@@ -51,8 +55,34 @@
 
     public async Task HandleSignUp()
     {
-        // This is only called when the form is valid.
-        NavigationManager.NavigateTo("/welcome");
+        try
+        {
+            CreateUserRequest request = new CreateUserRequest();
+            if(this.signUpModel != null){
+                request = new CreateUserRequest()
+                {
+                    FirstName = this.signUpModel.FirstName,
+                    LastName = this.signUpModel.LastName,
+                    Email = this.signUpModel.Email,
+                    Password = this.signUpModel.Password,
+                    Phone = "8317557699"
+                };
+            }
+
+            if (request != null)
+            {
+                var createUserResponse = await UserService.CreateUser(request);
+
+                if (createUserResponse.StatusCode == StatusCodes.Status200OK)
+                {
+                    ToastService.ShowSuccess("This is a success message!");
+                }
+            }
+
+        }catch(Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public void NavigateToSignIn()
