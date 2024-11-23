@@ -1,13 +1,17 @@
-﻿@using AuthGuardPro_Application.DTO_s.DTO
+﻿@using System.ComponentModel.DataAnnotations
+@using AuthGuardPro_Application.DTO_s.DTO
 @using AuthGuardPro_Application.DTO_s.Requests
+@using Blazored.Toast.Services
 @using StayEasePro_WEBAPP.Services.Contracts
 @using StayEasePro_WebApplication.Data.DTO_s
 @using static StayEasePro_WebApplication.Data.Enums.CommonEnums
-@inject IUserService UserService;
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
 
 <EditForm EditContext="@editContext" OnValidSubmit="HandleSignUp">
     <DataAnnotationsValidator />
-
+    <ValidationSummary />
 
     <div class="row mb-3">
         <div class="col-md-6">
@@ -23,15 +27,13 @@
     </div>
 
     <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email Address</label>
-        <InputText class="form-control" @bind-Value="signUpModel.Email" placeholder="Enter your email" />
-        <ValidationMessage For="@(() => signUpModel.Email)" class="text-danger" />
+        <label for="emailOrPhone" class="form-label">Email or Phone</label>
+        <InputText class="form-control" @bind-Value="signUpModel.EmailOrPhone" placeholder="Enter your email or phone" />
+        <ValidationMessage For="@(() => signUpModel.EmailOrPhone)" class="text-danger" />
     </div>
 
     <div class="mb-4">
-        <div class="d-flex align-items-center justify-content-between">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-        </div>
+        <label for="password" class="form-label">Password</label>
         <InputText type="password" class="form-control" @bind-Value="signUpModel.Password" placeholder="Enter your password" />
         <ValidationMessage For="@(() => signUpModel.Password)" class="text-danger" />
     </div>
@@ -58,15 +60,24 @@
         try
         {
             CreateUserRequest request = new CreateUserRequest();
-            if(this.signUpModel != null){
+            if (signUpModel != null)
+            {
                 request = new CreateUserRequest()
+                    {
+                        FirstName = signUpModel.FirstName,
+                        LastName = signUpModel.LastName,
+                        Password = signUpModel.Password
+                    };
+
+                // Determine if the input is an email or phone
+                if (new EmailAddressAttribute().IsValid(signUpModel.EmailOrPhone))
                 {
-                    FirstName = this.signUpModel.FirstName,
-                    LastName = this.signUpModel.LastName,
-                    Email = this.signUpModel.Email,
-                    Password = this.signUpModel.Password,
-                    Phone = "8317557699"
-                };
+                    request.Email = signUpModel.EmailOrPhone;
+                }
+                else
+                {
+                    request.Phone = signUpModel.EmailOrPhone;
+                }
             }
 
             if (request != null)
@@ -75,11 +86,15 @@
 
                 if (createUserResponse.StatusCode == StatusCodes.Status200OK)
                 {
-                    ToastService.ShowSuccess("This is a success message!");
+                    ToastService.ShowToast(ToastLevel.Success,"User sign up successfully!");
+                }
+                else
+                {
+                    ToastService.ShowToast(ToastLevel.Error, "User sign up failed!");
                 }
             }
-
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             throw ex;
         }

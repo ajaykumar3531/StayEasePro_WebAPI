@@ -45,9 +45,10 @@ namespace AuthGuardPro_Application.Repos.Services
                     return response;
                 }
 
-                // Check if a user with the same username or email already exists and is not marked as deleted.
                 var existedUser = (await _userContext.GetAllAsync()).FirstOrDefault(x =>
-                                (x.Email.ToLower() == request.Email.ToLower() && x.Phone.ToLower() == request.Phone.ToLower()) && x.DeleteStatus == false);
+      x.DeleteStatus == false &&
+      ((x.Email != null && !string.IsNullOrWhiteSpace(request.Email) && x.Email.ToLower() == request.Email.ToLower()) ||
+       (x.Phone != null && !string.IsNullOrWhiteSpace(request.Phone) && x.Phone.ToLower() == request.Phone.ToLower())));
 
                 if (existedUser != null)
                 {

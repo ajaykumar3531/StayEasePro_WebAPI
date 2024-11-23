@@ -62,7 +62,7 @@ namespace StayEasePro_WEBAPP.Services.Contracts
             }
         }
 
-        public async Task<T> PostAsync<T>(string url, T data)
+        public async Task<T> PostAsync<T>(string url, object data)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace StayEasePro_WEBAPP.Services.Contracts
             }
         }
 
-        public async Task<T> PutAsync<T>(string url, T data)
+        public async Task<T> PutAsync<T>(string url, object data)
         {
             try
             {

@@ -12,18 +12,13 @@ namespace AuthGuardPro_Application.DTO_s.Requests
 
         public string? LastName { get; set; } = string.Empty;
 
-        public string Email { get; set; } = null!;
+        public string Email { get; set; } = string.Empty;
 
-        public string Phone { get; set; } = null!;
+        public string Phone { get; set; } = string.Empty;
 
-        public string Password { get; set; } = null!;
+        public string Password { get; set; } = string.Empty;
 
-        public AddressDTO AddressDetails { get; set; } = null;
-        public DateTime? JoinedDate { get; set; } = null;
-
-        public DateTime? ExpectedJoindDate { get; set; } = null;
-
-        public DateOnly? DOB { get; set; } = null;
+        
 
     }
 }

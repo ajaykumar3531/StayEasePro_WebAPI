@@ -3,6 +3,7 @@ using AuthGuardPro_Application.DTO_s.Responses;
 using StayEasePro_WEBAPP.Services.Contracts;
 using StayEasePro_WEBAPP.Data.DTO_s;
 using System.Threading.Tasks;
+using Blazored.Toast.Services;
 
 namespace StayEasePro_WEBAPP.Services.Implementations
 {
@@ -10,11 +11,12 @@ namespace StayEasePro_WEBAPP.Services.Implementations
     {
         private readonly IHttpClientService _httpClientService;
         private readonly ApiUrlsDto _apiUrls;
-
-        public UserService(IHttpClientService httpClientService, ApiUrlsDto apiUrls)
+        private readonly IToastService _toastService;
+        public UserService(IHttpClientService httpClientService, ApiUrlsDto apiUrls, IToastService toastService)
         {
             _httpClientService = httpClientService;
             _apiUrls = apiUrls;  // Injected ApiUrlsDto
+            _toastService = toastService;
         }
 
         public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
@@ -29,6 +31,7 @@ namespace StayEasePro_WEBAPP.Services.Implementations
             }
             catch (Exception ex)
             {
+                _toastService.ShowToast(ToastLevel.Error, ex.Message);
                 // Handle the error (log, rethrow, etc.)
                 throw new Exception("Error occurred while creating user.", ex);
             }

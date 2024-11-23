@@ -83,15 +83,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAnyOrigin", policy =>
-    {
-        policy.AllowAnyOrigin()  // Allow all origins
-              .AllowAnyHeader()  // Allow all headers
-              .AllowAnyMethod(); // Allow all HTTP methods
-    });
-});
 
 var app = builder.Build();
 
@@ -102,6 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 // Force HTTPS redirection for all requests
 app.UseHttpsRedirection();
@@ -116,6 +108,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<CustomAuthorizeUserMiddleware>();
-
+app.UseCors(policy =>
+    policy.AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader());
 // Run the application
 app.Run();

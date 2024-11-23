@@ -10,24 +10,24 @@ namespace AuthGuardPro_Application.DTO_s.Requests
     public class CreateUserRequest
     {
 
-        public short Role { get; set; }
+        public short Role { get; set; } = 0;
 
-        public string? FirstName { get; set; }
+        public string? FirstName { get; set; } = string.Empty;
 
-        public string? LastName { get; set; }
+        public string? LastName { get; set; } = string.Empty;
 
-        public string Email { get; set; } = null!;
+        public string Email { get; set; } = string.Empty;
 
-        public string Phone { get; set; } = null!;
+        public string Phone { get; set; } = string.Empty;
 
-        public string Password { get; set; } = null!;
+        public string Password { get; set; } = string.Empty;
 
         public AddressDTO AddressDetails { get; set; } = new AddressDTO();
-        public DateTime JoinedDate { get; set; }
+        public DateTime? JoinedDate { get; set; } = null;
 
-        public DateTime ExpectedJoindDate { get; set; }
+        public DateTime? ExpectedJoindDate { get; set; } = null;
 
-        public DateOnly DOB { get; set; }
+        public DateOnly? DOB { get; set; } = null;
 
     }
 }
