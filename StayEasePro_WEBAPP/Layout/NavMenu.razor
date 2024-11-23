@@ -1,11 +1,69 @@
-﻿
+﻿@page "/sidebar"
+
+
+<div class="@BodyClass">
+    <nav class="@SidebarClass">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="logo.png" alt="">
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">Codinglab</span>
+                    <span class="profession">Web developer</span>
+                </div>
+            </div>
+
+            <i class='bi bi-list toggle' @onclick="ToggleSidebar"></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+                @foreach (var item in menuItems)
+                {
+                    <li class="search-box" @onclick="() => OpenSideBar()">
+                        <a href="@item.Link">
+                            <i class="@item.Icon iconnames"></i>
+                            <span class="text nav-text">@item.Text</span>
+                        </a>
+                    </li>
+                }
+            </div>
+
+            <div class="bottom-content">
+                <li>
+                    <a href="#">
+                        <i class="bi bi-box-arrow-right icon"></i>
+                        <span class="text nav-text">Logout</span>
+                    </a>
+                </li>
+            </div>
+        </div>
+    </nav>
+</div>
+
 @code {
-    private bool collapseNavMenu = true;
+    private bool isSidebarClosed = true;
+    private bool isDarkMode = false;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string SidebarClass => isSidebarClosed ? "sidebar close" : "sidebar";
+    private string BodyClass => isDarkMode ? "dark" : string.Empty;
 
-    private void ToggleNavMenu()
+    private List<MenuItem> menuItems = new List<MenuItem>
     {
-        collapseNavMenu = !collapseNavMenu;
+        new MenuItem { Icon = "bi bi-house-door", Text = "Dashboard", Link = "#" },
+        new MenuItem { Icon = "bi bi-gear", Text = "Settings", Link = "#" },
+        new MenuItem { Icon = "bi bi-person", Text = "Profile", Link = "#" }
+    };
+
+    private void ToggleSidebar() => isSidebarClosed = !isSidebarClosed;
+    private void OpenSideBar() => isSidebarClosed = false;
+
+    public class MenuItem
+    {
+        public string Icon { get; set; }
+        public string Text { get; set; }
+        public string Link { get; set; }
     }
 }

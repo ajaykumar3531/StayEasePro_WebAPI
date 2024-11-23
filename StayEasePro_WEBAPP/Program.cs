@@ -21,9 +21,9 @@ if (apiUrls == null)
 
 builder.Services.AddSingleton(apiUrls);
 
-
 // Register services
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrls.Testing) });
+builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 builder.Services.AddScoped<IUserService, UserService>();
