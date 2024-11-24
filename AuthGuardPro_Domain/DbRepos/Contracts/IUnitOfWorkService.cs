@@ -14,6 +14,13 @@ namespace StayEasePro_Application.CommonRepos.Contracts
         IBaseRepository<Room> Rooms { get; }
         IBaseRepository<Tenant> Tenants { get; }
         IBaseRepository<Address> Addresses { get; }
+        IBaseRepository<City> Cities { get; }
+        IBaseRepository<State> State { get; }
+        IBaseRepository<Country> Countries { get; }
+       
+
+
+
         Task<int> SaveChangesAsync();
     }
 }

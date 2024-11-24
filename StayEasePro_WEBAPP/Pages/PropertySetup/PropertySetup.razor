@@ -1,5 +1,78 @@
-﻿<h3>PropertySetup</h3>
+﻿@page "/property-setup"
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 600px; margin: auto;">
+        <div class="card-body">
+            <h3 class="text-center mb-4">Property Setup</h3>
+
+            <EditForm Model="property" OnValidSubmit="HandleSubmit">
+                <!-- Property Name -->
+                <div class="mb-3">
+                    <label for="propertyName" class="form-label">Property Name</label>
+                    <InputText id="propertyName" class="form-control" @bind-Value="property.Name" placeholder="Enter property name" />
+                </div>
+
+                <!-- Property Type -->
+                <div class="mb-3">
+                    <label class="form-label">Property Type</label>
+                    <InputRadioGroup TValue="string" @bind-Value="property.Type" class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="apartment" class="form-check-input"  />
+                            <label for="apartment" class="form-check-label">Apartment</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="pg" class="form-check-input"  />
+                            <label for="pg" class="form-check-label">PG</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="hostel" class="form-check-input"  />
+                            <label for="hostel" class="form-check-label">Hostel</label>
+                        </div>
+                    </InputRadioGroup>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <InputRadioGroup TValue="string" @bind-Value="property.Category" class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="coliving" class="form-check-input"  />
+                            <label for="coliving" class="form-check-label">Coliving</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="mens" class="form-check-input"  />
+                            <label for="mens" class="form-check-label">Men's PG</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio TValue="string" id="womens" class="form-check-input" />
+                            <label for="womens" class="form-check-label">Women's PG</label>
+                        </div>
+                    </InputRadioGroup>
+                </div>
+
+                <!-- Next Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Next</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
 
 @code {
+    private PropertyModel property = new();
 
+    private void HandleSubmit()
+    {
+        Console.WriteLine($"Property Name: {property.Name}, Type: {property.Type}, Category: {property.Category}");
+        // Add navigation or functionality for the next step.
+    }
+
+    private class PropertyModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+    }
 }

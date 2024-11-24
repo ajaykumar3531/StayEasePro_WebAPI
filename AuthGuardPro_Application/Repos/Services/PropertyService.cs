@@ -54,9 +54,9 @@ namespace StayEasePro_Application.Repos.Services
                                         Address address = new Address
                                         {
                                             Street = propertyData.Street,
-                                            City = propertyData.City,
-                                            State = propertyData.State,
-                                            Country = propertyData.Country,
+                                            CityId = Guid.Parse(propertyData.City),
+                                            StateId = Guid.Parse(propertyData.State),
+                                            CountryId = Guid.Parse(propertyData.Country),
                                             ZipCode = propertyData.ZipCode,
                                             DeleteStatus = false,
                                             CreatedAt = DateTime.Now,
@@ -187,9 +187,7 @@ namespace StayEasePro_Application.Repos.Services
                                     if (address != null)
                                     {
                                         address.Street = propertyData.Street ?? address.Street;
-                                        address.City = propertyData.City ?? address.City;
-                                        address.State = propertyData.State ?? address.State;
-                                        address.Country = propertyData.Country ?? address.Country;
+                                      
                                         address.ZipCode = propertyData.ZipCode ?? address.ZipCode;
                                         address.UpdatedAt = DateTime.Now;
 
@@ -299,9 +297,7 @@ namespace StayEasePro_Application.Repos.Services
                         PropertyName = property.PropertyName,
                         TotalRooms = property.TotalRooms,
                         Street = address?.Street,
-                        City = address?.City,
-                        State = address?.State,
-                        Country = address?.Country,
+                       
                         ZipCode = address?.ZipCode
                     };
                 }).ToList();

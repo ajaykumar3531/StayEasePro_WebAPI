@@ -21,6 +21,14 @@ public partial class Property
 
     public Guid AddressId { get; set; }
 
+    public short? NumberOfFloors { get; set; }
+
+    public string? BlockName { get; set; }
+
+    public short? Type { get; set; }
+
+    public short? PropertyType { get; set; }
+
     public virtual Address Address { get; set; } = null!;
 
     public virtual User Owner { get; set; } = null!;

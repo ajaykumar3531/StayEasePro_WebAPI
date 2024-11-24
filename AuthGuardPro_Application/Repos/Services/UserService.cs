@@ -350,9 +350,7 @@ namespace AuthGuardPro_Application.Repos.Services
                 var address = new Address
                 {
                     Street = request.AddressDetails.Street,
-                    City = request.AddressDetails.City,
-                    State = request.AddressDetails.State,
-                    Country = request.AddressDetails.Country,
+                  
                     ZipCode = request.AddressDetails.ZipCode,
                     DeleteStatus = false,
                     CreatedAt = DateTime.Now,

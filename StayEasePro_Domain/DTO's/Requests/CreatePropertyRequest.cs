@@ -23,4 +23,22 @@
 
         public string? ZipCode { get; set; }
     }
+
+   
+    public class PropertyRoomDetails
+    {
+        public string RoomNumber { get; set; } = null!;
+
+        public int MaxOccupancy { get; set; }
+
+        public decimal RentPerMonth { get; set; }
+
+        public bool OccupiedStatus { get; set; }
+
+        public bool DeleteStatus { get; set; }
+
+        public short? FloorNumber { get; set; }
+
+        public string? BlockName { get; set; }
+    }
 }

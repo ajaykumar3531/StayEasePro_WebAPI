@@ -19,6 +19,10 @@ public partial class Room
 
     public bool DeleteStatus { get; set; }
 
+    public short? FloorNumber { get; set; }
+
+    public string? BlockName { get; set; }
+
     public virtual Property Property { get; set; } = null!;
 
     public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();

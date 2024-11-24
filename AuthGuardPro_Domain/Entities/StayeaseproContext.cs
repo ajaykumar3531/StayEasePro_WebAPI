@@ -17,9 +17,15 @@ public partial class StayeaseproContext : DbContext
 
     public virtual DbSet<Address> Addresses { get; set; }
 
+    public virtual DbSet<City> Cities { get; set; }
+
+    public virtual DbSet<Country> Countries { get; set; }
+
     public virtual DbSet<Property> Properties { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
+
+    public virtual DbSet<State> States { get; set; }
 
     public virtual DbSet<Tenant> Tenants { get; set; }
 
@@ -40,17 +46,65 @@ public partial class StayeaseproContext : DbContext
             entity.Property(e => e.AddressId)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("AddressID");
-            entity.Property(e => e.City).HasMaxLength(100);
-            entity.Property(e => e.Country).HasMaxLength(100);
+            entity.Property(e => e.CityId).HasColumnName("CityID");
+            entity.Property(e => e.CountryId).HasColumnName("CountryID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.State).HasMaxLength(100);
+            entity.Property(e => e.Landmark).HasMaxLength(255);
+            entity.Property(e => e.StateId).HasColumnName("StateID");
             entity.Property(e => e.Street).HasMaxLength(255);
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.ZipCode).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasKey(e => e.CityId).HasName("PK__Cities__F2D21A96EE70D229");
+
+            entity.Property(e => e.CityId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("CityID");
+            entity.Property(e => e.CityName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.StateId).HasColumnName("StateID");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.State).WithMany(p => p.Cities)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Cities__StateID__7E37BEF6");
+        });
+
+        modelBuilder.Entity<Country>(entity =>
+        {
+            entity.HasKey(e => e.CountryId).HasName("PK__Countrie__10D160BFF861ADE7");
+
+            entity.HasIndex(e => e.CountryCode, "UQ__Countrie__5D9B0D2C7EBD8F2F").IsUnique();
+
+            entity.Property(e => e.CountryId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("CountryID");
+            entity.Property(e => e.CountryCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.CountryName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Property>(entity =>
@@ -63,6 +117,9 @@ public partial class StayeaseproContext : DbContext
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("PropertyID");
             entity.Property(e => e.AddressId).HasColumnName("AddressID");
+            entity.Property(e => e.BlockName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -90,6 +147,9 @@ public partial class StayeaseproContext : DbContext
             entity.Property(e => e.RoomId)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("RoomID");
+            entity.Property(e => e.BlockName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.PropertyId).HasColumnName("PropertyID");
             entity.Property(e => e.RentPerMonth).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.RoomNumber)
@@ -100,6 +160,30 @@ public partial class StayeaseproContext : DbContext
                 .HasForeignKey(d => d.PropertyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Rooms__PropertyI__46E78A0C");
+        });
+
+        modelBuilder.Entity<State>(entity =>
+        {
+            entity.HasKey(e => e.StateId).HasName("PK__States__C3BA3B5A1A489511");
+
+            entity.Property(e => e.StateId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("StateID");
+            entity.Property(e => e.CountryId).HasColumnName("CountryID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.StateName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Country).WithMany(p => p.States)
+                .HasForeignKey(d => d.CountryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__States__CountryI__787EE5A0");
         });
 
         modelBuilder.Entity<Tenant>(entity =>

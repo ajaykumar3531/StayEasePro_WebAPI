@@ -25,6 +25,12 @@ namespace StayEasePro_Core.DbRepos.Services
         public IBaseRepository<Tenant> Tenants => new BaseRepository<Tenant>(_context);
         public IBaseRepository<Address> Addresses => new BaseRepository<Address>(_context);
 
+        public IBaseRepository<City> Cities => new BaseRepository<City>(_context);
+
+        public IBaseRepository<State> State => new BaseRepository<State>(_context);
+
+        public IBaseRepository<Country> Countries => new BaseRepository<Country>(_context);
+
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
