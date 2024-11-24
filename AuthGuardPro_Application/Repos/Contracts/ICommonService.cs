@@ -11,7 +11,6 @@ namespace StayEasePro_Application.Repos.Contracts
     public interface ICommonService
     {
         Task<ListOfStatesResponse> GetAllStates(string countryID);
-
         Task<ListOfCitiesResponse> GetAllCities(string countryID);
     }
 }

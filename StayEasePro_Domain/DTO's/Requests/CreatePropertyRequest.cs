@@ -2,43 +2,41 @@
 {
     public class CreatePropertyRequest
     {
-        public List<PropertyDetails> PropertyDetails { get; set; }  = new List<PropertyDetails>();
+        public PropertyDetails PropertyDetails { get; set; } = new PropertyDetails();
+        public PropertyAddressDetails AddressDetails { get; set; } = new PropertyAddressDetails();
+        public List<RoomDetails> RoomDetails { get; set; } = new List<RoomDetails>();
     }
 
     public class PropertyDetails
     {
-
-        public string PropertyID { get; set; } = string.Empty;
-        public string? PropertyName { get; set; }
-
+        public string OwnerId { get; set; } = string.Empty;
+        public string? PropertyName { get; set; } = string.Empty;
         public long TotalRooms { get; set; }
-
-        public string? Street { get; set; }
-
-        public string? City { get; set; }
-
-        public string? State { get; set; }
-
-        public string? Country { get; set; }
-
-        public string? ZipCode { get; set; }
+        public short? NumberOfFloors { get; set; }
+        public short? Type { get; set; }
+        public short? PropertyType { get; set; }
     }
 
-   
+    public class PropertyAddressDetails
+    {
+
+        public string? Street { get; set; } = string.Empty;
+        public string? ZipCode { get; set; } = string.Empty;
+        public string? StateId { get; set; } = string.Empty;
+        public string? CountryId { get; set; } = string.Empty;
+        public string? CityId { get; set; } = string.Empty;
+        public string? Landmark { get; set; } = string.Empty;
+
+    }
+
+
     public class PropertyRoomDetails
     {
-        public string RoomNumber { get; set; } = null!;
-
-        public int MaxOccupancy { get; set; }
-
+        public string RoomNumber { get; set; } = string.Empty;
+        public int MaxOccupancy { get; set; } = 0;
         public decimal RentPerMonth { get; set; }
-
         public bool OccupiedStatus { get; set; }
-
-        public bool DeleteStatus { get; set; }
-
         public short? FloorNumber { get; set; }
-
-        public string? BlockName { get; set; }
+        public string? BlockName { get; set; } = string.Empty;
     }
 }

@@ -40,75 +40,75 @@ namespace StayEasePro_Application.Repos.Services
                     // Continue processing userData as needed
                     if (userData != null)
                     {
-                        if (userData.Role == (int)TypeOfUserEnum.Owner)
-                        {
-                            if (request.PropertyDetails != null && request.PropertyDetails.Any())
-                            {
-                                var properties = new List<StayEasePro_Core.Entities.Property>();
+                        //if (userData.Role == (int)TypeOfUserEnum.Owner)
+                        //{
+                        //    if (request.PropertyDetails != null && request.PropertyDetails.Any())
+                        //    {
+                        //        var properties = new List<StayEasePro_Core.Entities.Property>();
 
-                                foreach (var propertyData in request.PropertyDetails)
-                                {
-                                    if (propertyData != null)
-                                    {
-                                        // Save the corresponding Address
-                                        Address address = new Address
-                                        {
-                                            Street = propertyData.Street,
-                                            CityId = Guid.Parse(propertyData.City),
-                                            StateId = Guid.Parse(propertyData.State),
-                                            CountryId = Guid.Parse(propertyData.Country),
-                                            ZipCode = propertyData.ZipCode,
-                                            DeleteStatus = false,
-                                            CreatedAt = DateTime.Now,
-                                            UpdatedAt = DateTime.Now
-                                        };
+                        //        foreach (var propertyData in request.PropertyDetails)
+                        //        {
+                        //            if (propertyData != null)
+                        //            {
+                        //                // Save the corresponding Address
+                        //                Address address = new Address
+                        //                {
+                        //                    Street = propertyData.Street,
+                        //                    CityId = Guid.Parse(propertyData.City),
+                        //                    StateId = Guid.Parse(propertyData.State),
+                        //                    CountryId = Guid.Parse(propertyData.Country),
+                        //                    ZipCode = propertyData.ZipCode,
+                        //                    DeleteStatus = false,
+                        //                    CreatedAt = DateTime.Now,
+                        //                    UpdatedAt = DateTime.Now
+                        //                };
 
-                                        // Add the address to the database (first save the address)
-                                        await _unitOfWorkService.Addresses.AddAsync(address);
-                                        if (await _unitOfWorkService.Addresses.SaveChangesAsync() > 0)
-                                        {
-                                            // Create and add the Property with the newly created AddressID
-                                            StayEasePro_Core.Entities.Property property = new StayEasePro_Core.Entities.Property
-                                            {
-                                                OwnerId = Guid.TryParse(UserID.ToUpper(), out var ownerGuid) ? ownerGuid : new Guid(),
-                                                PropertyName = propertyData.PropertyName,
-                                                TotalRooms = propertyData.TotalRooms,
-                                                DeleteStatus = false,
-                                                AddressId = address.AddressId,
-                                                CreatedAt = DateTime.Now,
-                                                UpdatedAt = DateTime.Now  // Link to the newly created Address
-                                            };
-                                            properties.Add(property);
-                                        }
-                                        else
-                                        {
-                                            response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                                            response.StatusCode = StatusCodes.Status404NotFound;
-                                        }
+                        //                // Add the address to the database (first save the address)
+                        //                await _unitOfWorkService.Addresses.AddAsync(address);
+                        //                if (await _unitOfWorkService.Addresses.SaveChangesAsync() > 0)
+                        //                {
+                        //                    // Create and add the Property with the newly created AddressID
+                        //                    StayEasePro_Core.Entities.Property property = new StayEasePro_Core.Entities.Property
+                        //                    {
+                        //                        OwnerId = Guid.TryParse(UserID.ToUpper(), out var ownerGuid) ? ownerGuid : new Guid(),
+                        //                        PropertyName = propertyData.PropertyName,
+                        //                        TotalRooms = propertyData.TotalRooms,
+                        //                        DeleteStatus = false,
+                        //                        AddressId = address.AddressId,
+                        //                        CreatedAt = DateTime.Now,
+                        //                        UpdatedAt = DateTime.Now  // Link to the newly created Address
+                        //                    };
+                        //                    properties.Add(property);
+                        //                }
+                        //                else
+                        //                {
+                        //                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                        //                    response.StatusCode = StatusCodes.Status404NotFound;
+                        //                }
 
 
 
-                                    }
-                                }
+                        //            }
+                        //        }
 
-                                // Save properties in bulk after all addresses are linked
-                                if (properties.Any())
-                                {
-                                    await _unitOfWorkService.Properties.BulkSave(properties);
+                        //        // Save properties in bulk after all addresses are linked
+                        //        if (properties.Any())
+                        //        {
+                        //            await _unitOfWorkService.Properties.BulkSave(properties);
 
-                                    // Commit the changes
-                                    if (true)
-                                    {
-                                        response.UserID = UserID;
+                        //            // Commit the changes
+                        //            if (true)
+                        //            {
+                        //                response.UserID = UserID;
 
-                                        response.StatusMessage = Constants.MSG_SUCCESS;
-                                        response.StatusCode = StatusCodes.Status200OK;
-                                    }
+                        //                response.StatusMessage = Constants.MSG_SUCCESS;
+                        //                response.StatusCode = StatusCodes.Status200OK;
+                        //            }
 
-                                }
-                            }
-                        }
-                        else
+                        //        }
+                        //    }
+                        //}
+                        //else
                         {
                             response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
                             response.StatusCode = StatusCodes.Status404NotFound;
@@ -163,77 +163,77 @@ namespace StayEasePro_Application.Repos.Services
                     return response;
                 }
 
-                // Process each property detail in the request
-                if (request.PropertyDetails != null && request.PropertyDetails.Any())
-                {
-                    foreach (var propertyData in request.PropertyDetails)
-                    {
-                        if (propertyData != null)
-                        {
-                            // Find the property by PropertyId
-                            if (Guid.TryParse(propertyData.PropertyID, out var propertyId))
-                            {
-                                var property = await _unitOfWorkService.Properties.GetByIdAsync(propertyId);
+                //// Process each property detail in the request
+                //if (request.PropertyDetails != null && request.PropertyDetails.Any())
+                //{
+                //    foreach (var propertyData in request.PropertyDetails)
+                //    {
+                //        if (propertyData != null)
+                //        {
+                //            // Find the property by PropertyId
+                //            if (Guid.TryParse(propertyData.PropertyID, out var propertyId))
+                //            {
+                //                var property = await _unitOfWorkService.Properties.GetByIdAsync(propertyId);
 
-                                if (property != null)
-                                {
-                                    // Update the property details
-                                    property.PropertyName = propertyData.PropertyName ?? property.PropertyName;
-                                    property.TotalRooms = propertyData.TotalRooms;
-                                    property.UpdatedAt = DateTime.Now;
+                //                if (property != null)
+                //                {
+                //                    // Update the property details
+                //                    property.PropertyName = propertyData.PropertyName ?? property.PropertyName;
+                //                    property.TotalRooms = propertyData.TotalRooms;
+                //                    property.UpdatedAt = DateTime.Now;
 
-                                    // Update the associated address if it exists
-                                    Address address = await _unitOfWorkService.Addresses.GetByIdAsync(property.AddressId);
-                                    if (address != null)
-                                    {
-                                        address.Street = propertyData.Street ?? address.Street;
+                //                    // Update the associated address if it exists
+                //                    Address address = await _unitOfWorkService.Addresses.GetByIdAsync(property.AddressId);
+                //                    if (address != null)
+                //                    {
+                //                        address.Street = propertyData.Street ?? address.Street;
                                       
-                                        address.ZipCode = propertyData.ZipCode ?? address.ZipCode;
-                                        address.UpdatedAt = DateTime.Now;
+                //                        address.ZipCode = propertyData.ZipCode ?? address.ZipCode;
+                //                        address.UpdatedAt = DateTime.Now;
 
-                                        // Save the updated address
-                                        await _unitOfWorkService.Addresses.UpdateAsync(address);
-                                    }
-                                    else
-                                    {
-                                        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                                        response.StatusCode = StatusCodes.Status404NotFound;
-                                        return response;
-                                    }
+                //                        // Save the updated address
+                //                        await _unitOfWorkService.Addresses.UpdateAsync(address);
+                //                    }
+                //                    else
+                //                    {
+                //                        response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                //                        response.StatusCode = StatusCodes.Status404NotFound;
+                //                        return response;
+                //                    }
 
-                                    // Save the updated property
-                                    await _unitOfWorkService.Properties.UpdateAsync(property);
-                                }
-                                else
-                                {
-                                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
-                                    response.StatusCode = StatusCodes.Status404NotFound;
-                                    return response;
-                                }
-                            }
-                            else
-                            {
-                                response.StatusMessage = Constants.MSG_FAILED;
-                                response.StatusCode = StatusCodes.Status400BadRequest;
-                                return response;
-                            }
-                        }
-                    }
+                //                    // Save the updated property
+                //                    await _unitOfWorkService.Properties.UpdateAsync(property);
+                //                }
+                //                else
+                //                {
+                //                    response.StatusMessage = Constants.MSG_NO_DATA_FOUND;
+                //                    response.StatusCode = StatusCodes.Status404NotFound;
+                //                    return response;
+                //                }
+                //            }
+                //            else
+                //            {
+                //                response.StatusMessage = Constants.MSG_FAILED;
+                //                response.StatusCode = StatusCodes.Status400BadRequest;
+                //                return response;
+                //            }
+                //        }
+                //    }
 
-                    // Commit the changes to the database
-                    if (await _unitOfWorkService.SaveChangesAsync() > 0)
-                    {
-                        response.StatusMessage = Constants.MSG_SUCCESS;
-                        response.StatusCode = StatusCodes.Status200OK;
-                        response.UserID = UserID;
-                    }
-                    else
-                    {
-                        response.StatusMessage = Constants.MSG_FAILED;
-                        response.StatusCode = StatusCodes.Status500InternalServerError;
-                    }
-                }
-                else
+                //    // Commit the changes to the database
+                //    if (await _unitOfWorkService.SaveChangesAsync() > 0)
+                //    {
+                //        response.StatusMessage = Constants.MSG_SUCCESS;
+                //        response.StatusCode = StatusCodes.Status200OK;
+                //        response.UserID = UserID;
+                //    }
+                //    else
+                //    {
+                //        response.StatusMessage = Constants.MSG_FAILED;
+                //        response.StatusCode = StatusCodes.Status500InternalServerError;
+                //    }
+                //}
+                //else
                 {
                     response.StatusMessage = Constants.MSG_FAILED;
                     response.StatusCode = StatusCodes.Status400BadRequest;
@@ -293,12 +293,9 @@ namespace StayEasePro_Application.Repos.Services
                     var address = addresses.FirstOrDefault(a => a.AddressId == property.AddressId);
                     return new PropertyDetails
                     {
-                        PropertyID = property.PropertyId.ToString().ToUpper(),
+                       
                         PropertyName = property.PropertyName,
                         TotalRooms = property.TotalRooms,
-                        Street = address?.Street,
-                       
-                        ZipCode = address?.ZipCode
                     };
                 }).ToList();
 
